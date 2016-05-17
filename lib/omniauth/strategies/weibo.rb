@@ -55,6 +55,7 @@ module OmniAuth
       #                     small     30x30
       #default is middle
       def image_url
+        options[:image_size] = options[:image_size] || "original"
         case options[:image_size].to_sym
         when :original
           url = raw_info['avatar_hd']
@@ -62,7 +63,7 @@ module OmniAuth
           url = raw_info['avatar_large']
         when :small
           url = raw_info['avatar_large'].sub('/180/','/30/')
-        else 
+        else
           url = raw_info['profile_image_url']
         end
       end
@@ -85,16 +86,18 @@ module OmniAuth
       end
 
       protected
-      def build_access_token
-        params = {
-          'client_id' => client.id,
-          'client_secret' => client.secret,
-          'code' => request.params['code'],
-          'grant_type' => 'authorization_code'
-        }.merge(token_params.to_hash(symbolize_keys: true))
-        client.get_token(params, deep_symbolize(options.auth_token_params))
+      # def build_access_token
+      #   params = {
+      #     'client_id' => client.id,
+      #     'client_secret' => client.secret,
+      #     'code' => request.params['code'],
+      #     'grant_type' => 'authorization_code'
+      #   }.merge(token_params.to_hash(symbolize_keys: true))
+      #   client.get_token(params, deep_symbolize(options.auth_token_params))
+      # end
+      def callback_url
+        full_host + script_name + callback_path
       end
-
     end
   end
 end
